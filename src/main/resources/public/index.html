@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>WhenHub Content Importer</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<style>
+body {
+	padding-top: 70px;
+	/* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+</style>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">WhenHub Content Importer</a>
+			</div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1"></div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container -->
+	</nav>
+
+	<!-- Page Content -->
+	<div class="container">
+
+		<div class="row">
+			<div class="col-lg-12 text-center">
+				<h1>Bring your Google Docs Presentations to WhenHub</h1>
+				<p class="lead">Automatically import presentation contents here!</p>
+
+				<h3>Step 1</h3>
+				<p>
+					Click the <strong>Share</strong> button
+				</p>
+				<img src="img/2017-04-28_124312.png">
+
+				<h3>Step 2</h3>
+				<p>
+					Click the <strong>Copy Link</strong> button
+				</p>
+				<img src="img/2017-04-28_124449.png">
+
+				<h3>Step 3</h3>
+				<p>
+					Paste the <strong>Link</strong> inside Google Link and press the <strong>Submit</strong>
+					button
+				</p>
+				<form>
+					<div class="form-group">
+						<label for="googleLinkText">Google Link</label> <input type="text"
+							class="form-control" id="googleLinkText"
+							aria-describedby="googleLinkHelp" placeholder="Enter Google Link">
+						<small id="googleLinkHelp" class="form-text text-muted">You'll
+							get this once you click Share in Google.</small>
+					</div>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
+				<div id="done">
+					<h3>All Done!</h3>
+					<p>
+						Go back to <strong>WhenHub</strong> to check your imported
+						contents!
+					</p>
+					<img src="img/2017-04-28_125542.png">
+				</div>
+
+			</div>
+		</div>
+		<!-- /.row -->
+
+	</div>
+	<!-- /.container -->
+
+	<!-- jQuery Version 1.11.1 -->
+	<script src="js/jquery.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+
+	<script>
+
+		setupImport();
+
+		$('.btn-primary').click(function(ev) {
+			ev.preventDefault();
+			startImport();
+			var id = getGoogleFileId();
+			$.get('/import?id=' + id, function(data) {
+				doneImport();
+			});
+		})
+
+		function setupImport() {
+			$('#done').hide();
+		}
+
+		function startImport() {
+			$('.btn-primary').html('Working...');
+			$('#done').hide();
+			window.scrollTo(0,document.body.scrollHeight);
+		}
+		
+		function doneImport() {
+			$('.btn-primary').html('Submit');
+			$('#done').show();
+			window.scrollTo(0,document.body.scrollHeight);
+		}
+		
+		function getGoogleFileId() {
+			// url looks similar to this
+			//   https://docs.google.com/presentation/d/1e3abrofZLUdOjxe3FIrQZwd4YMFAT5nPJdQN49rORrTUsNc/edit?usp=sharing
+			var url = $('#googleLinkText').val();
+			var urlParts = url.split('/');
+			return urlParts[5];
+		}
+	</script>
+
+</body>
+
+</html>
